@@ -1,0 +1,110 @@
+[
+  {
+    "name": "Galerías Valle Oriente",
+    "base_url": "https://www.galerias.com/valle-oriente/eventos",
+    "source_type": "promo_page",
+    "fetch_method": "html",
+    "content_type": "mixed",
+    "trust_score": 0.8,
+    "relevance_type": "exclusive_to_san_pedro"
+  },
+  {
+    "name": "Plaza Fiesta San Agustín",
+    "base_url": "https://www.plazafiestasanagustin.com.mx/eventos",
+    "source_type": "promo_page",
+    "fetch_method": "html",
+    "content_type": "mixed",
+    "trust_score": 0.8,
+    "relevance_type": "exclusive_to_san_pedro"
+  },
+  {
+    "name": "Chipinque Parque Ecológico",
+    "base_url": "https://www.chipinque.org.mx/eventos",
+    "source_type": "website",
+    "fetch_method": "html",
+    "content_type": "events",
+    "trust_score": 0.9,
+    "relevance_type": "exclusive_to_san_pedro"
+  },
+  {
+    "name": "Municipio San Pedro",
+    "base_url": "https://www.sanpedro.gob.mx/eventos/",
+    "source_type": "calendar",
+    "fetch_method": "html",
+    "content_type": "events",
+    "trust_score": 0.9,
+    "relevance_type": "exclusive_to_san_pedro"
+  },
+  {
+    "name": "Paseo San Pedro",
+    "base_url": "https://www.paseosanpedro.com/eventos",
+    "source_type": "promo_page",
+    "fetch_method": "html",
+    "content_type": "mixed",
+    "trust_score": 0.7,
+    "relevance_type": "exclusive_to_san_pedro"
+  },
+  {
+    "name": "Calzada 401",
+    "base_url": "https://www.calzada401.com/eventos",
+    "source_type": "website",
+    "fetch_method": "html",
+    "content_type": "events",
+    "trust_score": 0.7,
+    "relevance_type": "exclusive_to_san_pedro"
+  },
+  {
+    "name": "Via Cordillera",
+    "base_url": "https://www.viacordillera.com.mx/",
+    "source_type": "promo_page",
+    "fetch_method": "html",
+    "content_type": "mixed",
+    "trust_score": 0.7,
+    "relevance_type": "exclusive_to_san_pedro"
+  },
+  {
+    "name": "Plaza Central San Pedro",
+    "base_url": "https://www.plazacentralsanpedro.com/",
+    "source_type": "promo_page",
+    "fetch_method": "html",
+    "content_type": "mixed",
+    "trust_score": 0.7,
+    "relevance_type": "exclusive_to_san_pedro"
+  },
+  {
+    "name": "Distrito Valle",
+    "base_url": "https://www.distritovalle.com/eventos",
+    "source_type": "website",
+    "fetch_method": "html",
+    "content_type": "events",
+    "trust_score": 0.7,
+    "relevance_type": "exclusive_to_san_pedro"
+  },
+  {
+    "name": "Casa de la Cultura San Pedro",
+    "base_url": "https://www.sanpedro.gob.mx/cultura/",
+    "source_type": "calendar",
+    "fetch_method": "html",
+    "content_type": "events",
+    "trust_score": 0.85,
+    "relevance_type": "exclusive_to_san_pedro"
+  },
+  {
+    "name": "MARCO Monterrey",
+    "base_url": "https://www.marco.org.mx/exposiciones",
+    "source_type": "website",
+    "fetch_method": "html",
+    "content_type": "events",
+    "trust_score": 0.85,
+    "relevance_type": "regional"
+  },
+  {
+    "name": "Timeout Monterrey",
+    "base_url": "https://www.timeoutmexico.mx/monterrey/que-hacer/eventos-en-monterrey",
+    "source_type": "calendar",
+    "fetch_method": "html",
+    "content_type": "events",
+    "trust_score": 0.6,
+    "relevance_type": "regional"
+  }
+]

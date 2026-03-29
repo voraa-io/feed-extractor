@@ -1,0 +1,105 @@
+{
+  "municipality_names": [
+    "San Pedro Garza García",
+    "San Pedro Garza Garcia",
+    "San Pedro, N.L.",
+    "San Pedro NL",
+    "San Pedro",
+    "SPGG"
+  ],
+  "places": [
+    {
+      "name": "Galerías Valle Oriente",
+      "place_type": "mall",
+      "address": "Av. Lázaro Cárdenas 1000, Valle del Mirador",
+      "aliases": ["Valle Oriente", "Galerias Valle Oriente", "GVO"]
+    },
+    {
+      "name": "Plaza Fiesta San Agustín",
+      "place_type": "mall",
+      "address": "Av. Real San Agustín 222, Residencial San Agustín",
+      "aliases": ["San Agustín", "San Agustin", "Plaza San Agustín"]
+    },
+    {
+      "name": "Paseo San Pedro",
+      "place_type": "mall",
+      "address": "Av. Gómez Morín 110, Del Valle",
+      "aliases": ["Paseo SP"]
+    },
+    {
+      "name": "Calzada 401",
+      "place_type": "mall",
+      "address": "Calzada del Valle 401, Del Valle",
+      "aliases": ["Calzada del Valle 401"]
+    },
+    {
+      "name": "Vía Cordillera",
+      "place_type": "plaza",
+      "address": "Av. Cordillera 100, Residencial Cordillera",
+      "aliases": ["Via Cordillera"]
+    },
+    {
+      "name": "Plaza Central San Pedro",
+      "place_type": "plaza",
+      "address": "Av. Humberto Lobo, Del Valle",
+      "aliases": ["Plaza Central"]
+    },
+    {
+      "name": "Distrito Valle",
+      "place_type": "mixed_use",
+      "address": "Calzada del Valle, Del Valle",
+      "aliases": []
+    },
+    {
+      "name": "Chipinque",
+      "place_type": "park",
+      "address": "Carretera a Chipinque, San Pedro Garza García",
+      "aliases": ["Parque Ecológico Chipinque", "Parque Chipinque"]
+    },
+    {
+      "name": "Centrito Valle",
+      "place_type": "commercial_zone",
+      "address": "Calzada del Valle, Del Valle",
+      "aliases": ["Centrito"]
+    },
+    {
+      "name": "Pueblo Serena",
+      "place_type": "plaza",
+      "address": "Av. Alfonso Reyes 2613",
+      "aliases": []
+    }
+  ],
+  "colonias": [
+    "Del Valle",
+    "Fuentes del Valle",
+    "Valle del Mirador",
+    "Residencial San Agustín",
+    "San Agustín",
+    "Colorines",
+    "Valle de San Ángel",
+    "San Angel",
+    "Lomas del Valle",
+    "Jardines del Valle",
+    "Canteras de San Agustín",
+    "Los Cristales",
+    "La Cima",
+    "Villa Montaña",
+    "Carrizalejo",
+    "Hacienda San Jerónimo",
+    "El Obispado",
+    "Residencial Chipinque",
+    "Vistahermosa",
+    "Las Villas",
+    "Fuentes de Valle Alto"
+  ],
+  "landmarks": [
+    "Av. Gómez Morín",
+    "Av. Vasconcelos",
+    "Calzada del Valle",
+    "Av. Humberto Lobo",
+    "Av. Lázaro Cárdenas",
+    "Av. Real San Agustín",
+    "Av. Alfonso Reyes",
+    "Río Santa Catarina"
+  ]
+}
