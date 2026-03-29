@@ -60,6 +60,6 @@
     "fetch_method": "html",
     "content_type": "events",
     "trust_score": 0.9,
-    "relevance_type": "exclusive_to_san_pedro"
+    "relevance_type": "regional"
   }
 ]

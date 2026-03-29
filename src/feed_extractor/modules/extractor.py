@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 
@@ -171,12 +172,183 @@ def _extract_location_text(text: str) -> str:
     return "; ".join(matches[:3]) if matches else ""
 
 
+def extract_items_eventbrite(fetch_result: FetchResult) -> list[CandidateItem]:
+    """Extract events from Eventbrite search results page.
+
+    Parses the window.__SERVER_DATA__ JSON and JSON-LD structured data.
+    """
+    if not fetch_result.ok or not fetch_result.content:
+        return []
+
+    items: list[CandidateItem] = []
+
+    # Primary: parse __SERVER_DATA__ JSON (richer data)
+    match = re.search(
+        r"window\.__SERVER_DATA__\s*=\s*({.*?});",
+        fetch_result.content,
+        re.DOTALL,
+    )
+    if match:
+        try:
+            data = json.loads(match.group(1))
+            events = (
+                data.get("search_data", {})
+                .get("events", {})
+                .get("results", [])
+            )
+            for event in events:
+                items.append(_eventbrite_event_to_candidate(event, fetch_result))
+        except (json.JSONDecodeError, KeyError) as exc:
+            logger.warning("Failed to parse __SERVER_DATA__: %s", exc)
+
+    # Fallback: parse JSON-LD if __SERVER_DATA__ failed
+    if not items:
+        soup = BeautifulSoup(fetch_result.content, "lxml")
+        for script in soup.find_all("script", type="application/ld+json"):
+            try:
+                ld_data = json.loads(script.string)
+                if isinstance(ld_data, dict) and "itemListElement" in ld_data:
+                    for entry in ld_data["itemListElement"]:
+                        event = entry.get("item", {})
+                        items.append(
+                            _eventbrite_jsonld_to_candidate(event, fetch_result)
+                        )
+            except (json.JSONDecodeError, KeyError):
+                continue
+
+    logger.info("Extracted %d items from Eventbrite", len(items))
+    return items
+
+
+def _eventbrite_event_to_candidate(
+    event: dict, fetch_result: FetchResult
+) -> CandidateItem:
+    """Convert an Eventbrite __SERVER_DATA__ event to a CandidateItem."""
+    venue = event.get("primary_venue", {})
+    address = venue.get("address", {})
+
+    # Build location text from address
+    addr_parts = [
+        address.get("address_1", ""),
+        address.get("city", ""),
+        address.get("region", ""),
+        address.get("postal_code", ""),
+    ]
+    location_text = ", ".join(p for p in addr_parts if p)
+
+    # Build date text
+    date_parts = []
+    if event.get("start_date"):
+        start = event["start_date"]
+        if event.get("start_time"):
+            start += f" {event['start_time']}"
+        date_parts.append(start)
+    if event.get("end_date") and event["end_date"] != event.get("start_date"):
+        end = event["end_date"]
+        if event.get("end_time"):
+            end += f" {event['end_time']}"
+        date_parts.append(end)
+    raw_date = " → ".join(date_parts) if date_parts else ""
+
+    # Get image
+    image_url = ""
+    img = event.get("image", {})
+    if img:
+        sizes = img.get("image_sizes", {})
+        image_url = sizes.get("large", sizes.get("medium", img.get("url", "")))
+
+    # Classify type from tags
+    item_type = "event"
+    tags_text = " ".join(t.get("display_name", "") for t in event.get("tags", []))
+    full_text = f"{event.get('name', '')} {event.get('summary', '')} {tags_text}"
+    item_type = _classify_type(full_text)
+
+    return CandidateItem(
+        title=event.get("name", ""),
+        description=event.get("summary", ""),
+        item_type=item_type,
+        business_name=venue.get("name", ""),
+        venue_name=venue.get("name", ""),
+        raw_location=location_text,
+        raw_date=raw_date,
+        raw_price="",
+        source_url=event.get("url", fetch_result.url),
+        source_name=fetch_result.source.name,
+        image_url=image_url,
+        raw_extracted={
+            "eventbrite_id": event.get("id", ""),
+            "tags": [t.get("display_name", "") for t in event.get("tags", [])],
+            "timezone": event.get("timezone", ""),
+            "is_online": event.get("is_online_event", False),
+            "tickets_url": event.get("tickets_url", ""),
+            "address": address,
+        },
+    )
+
+
+def _eventbrite_jsonld_to_candidate(
+    event: dict, fetch_result: FetchResult
+) -> CandidateItem:
+    """Convert an Eventbrite JSON-LD event to a CandidateItem."""
+    location = event.get("location", {})
+    address = location.get("address", {})
+
+    addr_parts = [
+        address.get("streetAddress", ""),
+        address.get("addressLocality", ""),
+        address.get("addressRegion", ""),
+        address.get("postalCode", ""),
+    ]
+    location_text = ", ".join(p for p in addr_parts if p)
+
+    raw_date = event.get("startDate", "")
+    if event.get("endDate") and event["endDate"] != event.get("startDate"):
+        raw_date += f" → {event['endDate']}"
+
+    return CandidateItem(
+        title=event.get("name", ""),
+        description=event.get("description", ""),
+        item_type="event",
+        business_name=location.get("name", ""),
+        venue_name=location.get("name", ""),
+        raw_location=location_text,
+        raw_date=raw_date,
+        raw_price="",
+        source_url=event.get("url", fetch_result.url),
+        source_name=fetch_result.source.name,
+        image_url=event.get("image", ""),
+        raw_extracted={"jsonld": event},
+    )
+
+
+# --- Source routing ---
+
+SOURCE_EXTRACTORS: dict[str, callable] = {
+    "Eventbrite San Pedro F&B": extract_items_eventbrite,
+}
+
+# Sources with no known event structure — skip generic extraction
+# (these are restaurant homepages with no event listings)
+SKIP_GENERIC: set[str] = {
+    "Grupo Pangea",
+    "Pangea Restaurante",
+    "Colmillo",
+    "Sonora Grill Promociones",
+    "Arboleda San Pedro",
+    "Maverick",
+}
+
+
 def extract_items(fetch_result: FetchResult) -> list[CandidateItem]:
     """Main entry point: extract items from a fetch result.
 
     Routes to per-source extractors when available,
-    falls back to the generic extractor.
+    falls back to the generic extractor (unless source is in SKIP_GENERIC).
     """
-    # Future: add per-source extractors here
-    # source_extractors = { "source_name": custom_fn }
+    extractor = SOURCE_EXTRACTORS.get(fetch_result.source.name)
+    if extractor:
+        return extractor(fetch_result)
+    if fetch_result.source.name in SKIP_GENERIC:
+        logger.info("Skipping %s (no extractor, no events)", fetch_result.source.name)
+        return []
     return extract_items_generic(fetch_result)
