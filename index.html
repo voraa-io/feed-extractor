@@ -60,6 +60,8 @@
 .loyaltyDot.active{border-color:var(--blue);color:var(--blue)}
 @media(max-width:365px){.profileStats>div{padding:18px 15px}.profile{padding-top:20px}.profileName{font-size:25px}}
 
+.methodSheet .choice{min-height:59px;padding:11px 0}.methodSheet .choiceIcon{width:35px;height:35px;border-radius:12px}.methodSheet .sheetTitle{margin:6px 0 11px;font-size:26px}
+
 </style>
 </head>
 <body>
@@ -137,7 +139,7 @@ else if(sheet==='loyalty'){b=`<div class="sheetTitle serif">Guarda tu visita.</d
 else if(sheet==='identity'){b=`<div class="sheetTitle">Guarda tus visitas.</div><p class="sheetDesc">Elige cómo conectar tu perfil. Puedes seguir como invitado y guardar esta visita en tu dispositivo.</p><button class="choice" data-act="authApple"><strong>Continuar con Apple</strong><span class="arrow">›</span></button><button class="choice" data-act="authPhone"><strong>Usar mi número de celular</strong><span class="arrow">›</span></button>`;f=`<button class="secondary" data-act="guestContinue">Continuar sin cuenta</button>`}
 else if(sheet==='authUnavailable'){b=`<div class="sheetTitle">Tu visita está aquí.</div><p class="sheetDesc">La conexión de cuentas todavía no está disponible. Puedes continuar como invitado y conservar tus visitas en este dispositivo.</p>`;f=`<button class="primary" data-act="guestContinue">Continuar como invitado</button>`}
 else if(sheet==='visitDetail'){const vs=store.visits.filter(v=>v.restaurant===VENUE&&!v.discarded).slice().reverse();b=`<div class="sheetTitle serif">${VENUE}</div><p class="sheetDesc">${vs.length} ${vs.length===1?'visita':'visitas'} registradas · ${vs.filter(v=>v.status==='confirmed').reduce((s,v)=>s+(v.points||0),0)} puntos</p>${vs.map(v=>`<div class="detailItem"><span>${visitDate(v.date)}<br><small class="muted">${esc(v.table)}</small></span><span>${v.status==='confirmed'?`+${v.points} punto`:visitStatus(v)}</span></div>`).join('')}`;f=`<button class="primary" data-act="close">Listo</button>`}
-return `<div class="sheetScrim" data-act="close" aria-hidden="true"></div><section class="sheet" role="dialog" aria-modal="true" aria-label="Opciones de la cuenta"><span class="grab"></span><div class="sheetHead"><span></span><button class="close" data-act="close" aria-label="Cerrar">×</button></div><div class="sheetBody">${b}</div>${f?`<div class="sheetFoot">${f}</div>`:''}</section>`}
+return `<div class="sheetScrim" data-act="close" aria-hidden="true"></div><section class="sheet ${sheet==='method'?'methodSheet':''}" role="dialog" aria-modal="true" aria-label="Opciones de la cuenta"><span class="grab"></span><div class="sheetHead"><span></span><button class="close" data-act="close" aria-label="Cerrar">×</button></div><div class="sheetBody">${b}</div>${f?`<div class="sheetFoot">${f}</div>`:''}</section>`}
 function paint(){app.innerHTML=(page==='staff'?staff():page==='profile'?profile():page==='waiting'?waiting():page==='success'?success():checkout())+sheetHtml();document.body.style.overflow=sheet?'hidden':'';}
 function stopVisitTimer(){if(visitTimer!==null){clearInterval(visitTimer);visitTimer=null}}
 function beginVisitTimer(){stopVisitTimer();visitAutoOpened=false;visitCountdown=5;visitTimer=setInterval(()=>{if(page!=='success'||sheet){stopVisitTimer();return}visitCountdown-=1;const el=document.getElementById('visitCountdown');if(el)el.textContent=`Guarda tu visita en ${Math.max(0,visitCountdown)} s`;if(visitCountdown<=0){stopVisitTimer();visitAutoOpened=true;open('loyalty')}},1000)}
