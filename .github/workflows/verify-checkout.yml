@@ -1,0 +1,25 @@
+name: Verify hosted Voraa checkout
+on:
+  push:
+    branches: [gh-pages]
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify public page and critical content
+        run: |
+          set -e
+          URL=https://voraa-io.github.io/feed-extractor/
+          for i in 1 2 3 4 5; do
+            if curl -fLsS --max-time 12 "$URL" -o /tmp/checkout.html; then
+              grep -q 'id="app"' /tmp/checkout.html
+              grep -q 'Bodegón San Agustín' /tmp/checkout.html
+              grep -q 'localStorage' /tmp/checkout.html
+              echo "PASS: Public page available at $URL ($(wc -c < /tmp/checkout.html) bytes)"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo 'FAIL: Public checkout did not become reachable' >&2
+          exit 1
